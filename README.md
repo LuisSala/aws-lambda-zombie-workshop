@@ -766,6 +766,106 @@ When you've copied the code into the Lambda browser editor, locate the variable 
 
 * This Lambda Function takes the zombie sensor message from SNS, parses it, and makes an AWS SigV4 signed HTTPS POST request to your API Gateway message endpoint. That endpoint inserts the record into DynamoDB as a message making it available to the application on subsequent poll requests.
 
+## Lab 6 - Box Integration
+
+**What you'll do in this lab...**
+
+In this lab, you'll integrate a Box upload function into your survivor chat. Sharing critical information during the apocalypse can save lives (and brains)! Survivors might need to share a photo of a new type of Zombie or send you a top-secret dossier with the location of a secret medical supply cache.
+
+After completing this lab, survivors will be able to upload files into Box and share the download link with others.
+
+**Box Integration Architecture**
+
+1\. [Sign-up for a Box Developer Account](https://app.box.com/signup/o/default_developer_offer). If you already have a Box account, Log in.
+
+2\. [Create Your Application](https://cloud.app.box.com/developers/services/edit/) and generate an [RSA Keypair]( https://docs.box.com/docs/app-auth#section-1-generating-an-rsa-keypair). Copy your whole private key.
+
+On Linux / UN*X systems, you might need to generate a password-less keypair thusly:
+```bash
+$ openssl genrsa -aes256 -out private_key.pem 2048
+Generating RSA private key, 2048 bit long modulus
+.........+++
+e is 65537 (0x10001)
+Enter pass phrase for private_key.pem:
+Verifying - Enter pass phrase for private_key.pem:
+
+$ openssl rsa -in private_key.pem -out private_key_no_password.pem
+Enter pass phrase for private_key.pem:
+writing RSA key
+
+$ openssl rsa -pubout -in private_key_no_password.pem -out public_key.pem
+writing RSA key
+```
+
+3\. From the Box "Application Edit" page copy the following into a local text file, you'll need this later:
+- client_secret (OAuth2 Parameters subsection)
+- client_id (OAuth2 Parameters subsection)
+- Api Key (Backend Parameters subsection)
+- Public Key ID (Public Key Management subsection)
+
+4\. Go to the [Account Information section in Admin console](https://app.box.com/master/settings) and copy down the value of the "Enterprise ID" field.
+
+5\. Open the [Lambda page](https://console.aws.amazon.com/lambda/home) in the AWS Management Console.
+
+Click **"Create a Lambda function"**. You'll create a two Lambda functions. One for uploading a file and second for generating and posting a shared link.
+
+Skip past the blueprints page as we will not be using one. Also skip past the triggers page by selecting **"Next"**.
+
+Give your function the following name: **"[Your CloudFormation Stack name]-uploadFile"**, for example "zombiestack-uploadFile". You can keep the default Node.js 4.3 Runtime.
+
+6\. For the role, select Choose an existing role from the dropdown and then select the role that looks like **[Your stack name]-ZombieLabLambdaRole...**
+
+7\. In the **"Advanced Settings"**, set the Timeout to 30 seconds. Then click **"Next"**.
+
+8\. On the review page, make sure that everything looks correct.
+
+9\. Click **"Create function"**. Your Lambda function will be created.
+
+10\. Repeat steps 5-9 for **sharedLink** function using **"[Your CloudFormation Stack name]-sharedLink"** as the function name on step 5.
+
+11\. Navigate to the API Gateway service in the AWS Management Console. Click into your "Zombie Workshop API Gateway" API. On the left Resources pane, click/highlight the "/zombie" resource so that it is selected. Then select the Actions button and choose Create Resource. For Resource Name. Click Create Resource to create your box API resource.
+
+12\. For your newly created "/box" resource, highlight it, then click Actions and select Create Method to create the POST method for the /zombie/box resource. In the dropdown, select POST. Click the checkmark to create the POST method. On the Setup page, choose an Integration Type of Lambda Function, and select the region that you are working in for the region dropdown. For the Lambda Function field, type "UploadFile" for the name of the Lambda Function. It should autofill your function name. Click Save and then OK to confirm.
+
+![Upload file function](/Images/Box-Step12.png)
+
+13\. Now repeat the same process but instead of creating a **POST** method create **PUT**. For the **Lambda Function** field type **SharedLink**.
+
+![Shared link function](/Images/Box-Step13.png)
+
+14\. Click the **Actions** button on the left side of the API Gateway console and select **Enable CORS**.  Click the **Enable CORS and replace all the existing CORS headers** button.
+
+15\. Click the **Actions** button and select **Deploy AP**I to deploy your API. In the Deploy API window, select **ZombieWorkshopStage** from the dropdown, then click **Deploy**.
+
+16\. On the left pane navigation tree, expand the **ZombieWorkshopStage** tree. Click the POST method for the /zombie/box resource.
+ 
+17\. Copy the contents of the **Invoke URL** field at the top of the page.
+ 
+18\. Open the **lambda/uploadFile/index.js** and **lambda/postSharedURL/index.js** file from the GitHub repo, found in the box folder.
+ 
+19\. Update all missing parameters in each of the lambda functions (**sharedLink/index.js** and **uploadFile/index.js**) under the Missing parameters information comment.
+
+Example:
+```javascript
+/* == Missing parameters information == */
+var API_KEY = ''; // Insert application Api Key from Backend Parameters section
+var CLIENT_ID = ''; // Insert application client_id from OAuth2 Parameters section
+var CLIENT_SECRET = ''; // Insert application client_secret from OAuth2 Parameters section
+var PUBLIC_KEY_ID = ''; // Insert application Public Key ID from Public Key Management section
+var ENTERPRISE_ID = ''; // Insert Enterprise ID from Account Information section in Admin console under the business settings
+var RSA_PRIVATE_KEY = ``;  // Insert your generated private key including  -----BEGIN RSA PRIVATE KEY----- and -----END RSA PRIVATE KEY-----
+```
+ 
+20\. Run npm install in both folders.
+ 
+21\. Zip contents of folders into separate zip files.
+ 
+22\. Open lambda functions and under the code section pick Upload a .ZIP file item from Code entry type dropdown. Upload a appropriate zip file for each function.
+ 
+**LAB 6 COMPLETE**
+
+Navigate to your zombie survivor chat app and you should see upload button next to signout button. Pick a file and share it with other survivors!
+ 
 ## Workshop Cleanup
 
 1\. To cleanup your environment, it is recommended to first delete these manual resources you created in the labs before deleting your CloudFormation stack, as there may be resource dependencies that stop the Stack from deleting. Follow steps 2-6 before deleting your Stack.

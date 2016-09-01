@@ -2,6 +2,7 @@ var app = angular.module("chatApp",
     ['ui.router',
     'ngResource',
     'ngMessages',
+    'ngSanitize',
     'chatApp.signin',
     'chatApp.signup',
     'chatApp.confirm',
@@ -258,6 +259,37 @@ apigClientFactory.newClient = function (config) {
         
         
         return apiGatewayClient.makeRequest(zombieTalkersOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    // Box
+    apigClient.getBoxSharedLinkForFile = function (params, body, additionalParams) {
+        if(additionalParams === undefined) {additionalParams = {}; }
+        apiGateway.core.utils.assertParametersDefined(params, [], ['body']);
+        
+        var zombieBoxPostRequest = {
+            verb: 'put'.toUpperCase(),
+            path: pathComponent + uritemplate('/zombie/box').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        return apiGatewayClient.makeRequest(zombieBoxPostRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    apigClient.uploadFileToBox = function (params, body, additionalParams) {
+        if(additionalParams === undefined) {additionalParams = {}; }
+        apiGateway.core.utils.assertParametersDefined(params, [], ['body']);
+        
+        var zombieBoxPostRequest = {
+            verb: 'post'.toUpperCase(),
+            path: pathComponent + uritemplate('/zombie/box').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, ['Content-Type']),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        return apiGatewayClient.makeRequest(zombieBoxPostRequest, authType, additionalParams, config.apiKey);
     };
     
     /*

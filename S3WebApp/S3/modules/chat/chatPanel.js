@@ -1,4 +1,4 @@
-angular.module('chatApp.chatPanel', ['chatApp.chatMessages'])
+angular.module('chatApp.chatPanel', ['chatApp.chatMessages','ngSanitize'])
 .controller('chatPanelCtrl', function($scope, $rootScope, $resource, $timeout) {
 
     $rootScope.$on("chatting", function() {
@@ -28,6 +28,17 @@ angular.module('chatApp.chatPanel', ['chatApp.chatMessages'])
                         .then(function(result){
                             if($rootScope.chatting) {
                                 //console.log('result: ' + result.data.messages);
+                                
+                                //Format URLs as HREFs
+                                var index=0;
+                                for (index in result.data.messages) {
+                                    var messageItem = result.data.messages[index];
+                                    if (messageItem!==undefined && messageItem.message.startsWith('http')) {
+                                        var newMessage = '<a href="'+messageItem.message+'" target="_new">'+messageItem.message+'</a>';
+                                        result.data.messages[index].message=newMessage;
+                                    }
+                                }
+                                
                                 $scope.messages = result.data.messages;
                                 
                             } else {

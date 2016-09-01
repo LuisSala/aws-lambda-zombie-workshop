@@ -1,5 +1,5 @@
 angular.module('chatApp.chat', ['chatApp.utils'])
-.controller('ChatCtrl', function($rootScope, $scope, $state, $_) {
+.controller('ChatCtrl', function($rootScope, $scope, $state, $_, $http) {
 
     $scope.chatState = "Start Chatting";
     $rootScope.chatuser = {
@@ -18,7 +18,7 @@ angular.module('chatApp.chat', ['chatApp.utils'])
     if (cognitoUser != null) {
         cognitoUser.getSession(function(err, session) {
             if (err) {
-                $scope.signout(); 
+                $scope.signout();
                 return;
             }
             console.log('session validity: ' + session.isValid());
@@ -80,6 +80,25 @@ angular.module('chatApp.chat', ['chatApp.utils'])
             $state.go('signin', { });
         }
     };
-
-
+    
+    // Box
+    var apigClient = apigClientFactory.newClient({
+        region: AWS_REGION,
+        accessKey: AWS.config.credentials.accessKeyId,
+        secretKey: AWS.config.credentials.secretAccessKey,
+        sessionToken: AWS.config.credentials.sessionToken
+    });
+    
+    $scope.uploadFile = function(event) {
+        var file = event.files[0];
+        var reader = new FileReader();
+        reader.addEventListener('load', function () {
+            var result = reader.result.split(',')[1];
+            var name = $rootScope.chatuser.name + ' (' + $rootScope.chatuser.email + ')';
+            apigClient.uploadFileToBox({}, {fileName: file.name, fileContent: result}).then(function(response) {
+                apigClient.getBoxSharedLinkForFile(null, {fileId:response.data.fileId, userName: name, appUserId: response.data.appUserId});
+            });
+        });
+        reader.readAsDataURL(file);
+    };
 });
