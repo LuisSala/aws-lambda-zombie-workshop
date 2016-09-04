@@ -33,6 +33,10 @@ Each of the labs in this workshop is an independent section and you may choose t
 
     This exercise integrates motion sensor detection of zombies to the chat system using an Intel Edison board and a Grove PIR Motion Sensor. You will configure a Lambda function to consume motion detection events and push them into the survivor chat!
 
+* **Lab 6: Box Integration**
+
+    Add file upload/download functionality powered by the [Box Platform](https://developer.box.com).
+	
 ### Workshop Cleanup
 
 This section provides instructions to tear down your environment when you're done working on the labs.
