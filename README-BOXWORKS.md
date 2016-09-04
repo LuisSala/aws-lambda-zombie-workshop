@@ -49,7 +49,7 @@ https://c9.io
 
 3\. Visit the "awshackers" team workspace: https://c9.io/awshackers
 
-4\. Clone the "awshackers/hackathon" workspace. Ensure you uniquely name the workspace.
+4\. Clone the "awshackers/hackathon" workspace by visiting https://c9.io/luissala/hackathon and select the "Clone" button. Ensure you uniquely name the workspace.
 
 5\. Open your newly-cloned workspace.
 
