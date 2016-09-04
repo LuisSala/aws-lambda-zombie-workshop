@@ -770,7 +770,7 @@ When you've copied the code into the Lambda browser editor, locate the variable 
 
 **What you'll do in this lab...**
 
-In this lab, you'll integrate a Box upload function into your survivor chat. Sharing critical information during the apocalypse can save lives (and brains)! Survivors might need to share a photo of a new type of Zombie or send you a top-secret dossier with the location of a secret medical supply cache.
+In this lab, you'll integrate a Box upload function into your survivor chat. Sharing critical information during the apocalypse can save lives (and brains)! Survivors might need to share a photo of a new type of Zombie or send you a top-secret dossier with the location of hidden medical supply caches.
 
 After completing this lab, survivors will be able to upload files into Box and share the download link with others.
 
@@ -797,7 +797,7 @@ $ openssl rsa -pubout -in private_key_no_password.pem -out public_key.pem
 writing RSA key
 ```
 
-3\. From the Box "Application Edit" page copy the following into a local text file, you'll need this later:
+3\. From the Box "Application Edit" page copy the following into a local text file, you'll need these later:
 - client_secret (OAuth2 Parameters subsection)
 - client_id (OAuth2 Parameters subsection)
 - Api Key (Backend Parameters subsection)
@@ -805,27 +805,32 @@ writing RSA key
 
 4\. Go to the [Account Information section in Admin console](https://app.box.com/master/settings) and copy down the value of the "Enterprise ID" field.
 
-5\. Open the [Lambda page](https://console.aws.amazon.com/lambda/home) in the AWS Management Console.
+5\. You'll now create two Lambda functions. One for uploading a file and second for generating and posting a shared link. Begin by opening the [Lambda page](https://console.aws.amazon.com/lambda/home) in the AWS Management Console.
 
-Click **"Create a Lambda function"**. You'll create a two Lambda functions. One for uploading a file and second for generating and posting a shared link.
+5a\. Click **"Create a Lambda function"**. 
 
-Skip past the blueprints page as we will not be using one. Also skip past the triggers page by selecting **"Next"**.
+5b\. Skip past the blueprints page as we will not be using one. Also skip past the triggers page by selecting **"Next"**.
 
-Give your function the following name: **"[Your CloudFormation Stack name]-uploadFile"**, for example "zombiestack-uploadFile". You can keep the default Node.js 4.3 Runtime.
+5c\. Give your function the following name: **"[Your CloudFormation Stack name]-uploadFile"**, for example "zombiestack-uploadFile". You can keep the default Node.js 4.3 Runtime. Refer to the following screenshot
 
-6\. For the role, select Choose an existing role from the dropdown and then select the role that looks like **[Your stack name]-ZombieLabLambdaRole...**
+![Upload file function](/Images/Box-Step5.png)
+
+6\. For the role, select Choose an existing role from the dropdown and then select the role that looks like **[Your stack name]-ZombieLabLambdaRole...** as shown in the screenshot above.
 
 7\. In the **"Advanced Settings"**, set the Timeout to 30 seconds. Then click **"Next"**.
+![Advanced Settings](/Images/Box-Step7.png)
 
-8\. On the review page, make sure that everything looks correct.
+8\. On the review page, make sure that everything looks correct. Your configuration review screen should look like this:
+![Review](/Images/Box-Step8.png)
 
 9\. Click **"Create function"**. Your Lambda function will be created.
 
-10\. Repeat steps 5-9 for **sharedLink** function using **"[Your CloudFormation Stack name]-sharedLink"** as the function name on step 5.
+10\. Repeat steps 5-9 for **sharedLink** function using **"[Your CloudFormation Stack name]-sharedLink"** as the function name on step 5. Your configuration review screen should look like this:
+![Review](/Images/Box-Step10.png)
 
-11\. Navigate to the API Gateway service in the AWS Management Console. Click into your "Zombie Workshop API Gateway" API. On the left Resources pane, click/highlight the "/zombie" resource so that it is selected. Then select the Actions button and choose Create Resource. For Resource Name. Click Create Resource to create your box API resource.
+11\. Navigate to the [API Gateway service in the AWS Management Console]( )https://console.aws.amazon.com/apigateway/home). Click into your "Zombie Workshop API Gateway" API. On the left Resources pane, click/highlight the "/zombie" resource so that it is selected. Then select the Actions button and choose Create Resource. For Resource Name. Click Create Resource to create your box API resource.
 
-12\. For your newly created "/box" resource, highlight it, then click Actions and select Create Method to create the POST method for the /zombie/box resource. In the dropdown, select POST. Click the checkmark to create the POST method. On the Setup page, choose an Integration Type of Lambda Function, and select the region that you are working in for the region dropdown. For the Lambda Function field, type "UploadFile" for the name of the Lambda Function. It should autofill your function name. Click Save and then OK to confirm.
+12\. For your newly created "/box" resource, highlight it, then click Actions and select Create Method to create the POST method for the /zombie/box resource. In the dropdown, select POST. Click the checkmark to create the POST method. On the Setup page, choose an Integration Type of Lambda Function, and select the region that you are working in for the region dropdown. For the Lambda Function field, type "uploadFile" for the name of the Lambda Function. It should autofill your function name. Click Save and then OK to confirm.
 
 ![Upload file function](/Images/Box-Step12.png)
 
@@ -833,14 +838,20 @@ Give your function the following name: **"[Your CloudFormation Stack name]-uploa
 
 ![Shared link function](/Images/Box-Step13.png)
 
-14\. Click the **Actions** button on the left side of the API Gateway console and select **Enable CORS**.  Click the **Enable CORS and replace all the existing CORS headers** button.
+14\. Click the **Actions** button on the left side of the API Gateway console and select **Enable CORS**.  Click the ** Enable CORS and replace all the existing CORS headers** button.
 
-15\. Click the **Actions** button and select **Deploy AP**I to deploy your API. In the Deploy API window, select **ZombieWorkshopStage** from the dropdown, then click **Deploy**.
+![Enable CORS](/Images/Box-Step14.png)
+
+15\. Click the **Actions** button and select **Deploy API** to deploy your API. In the Deploy API window, select **ZombieWorkshopStage** from the dropdown, then click **Deploy**.
+
+![Deploy API](/Images/Box-Step15.png)
 
 16\. On the left pane navigation tree, expand the **ZombieWorkshopStage** tree. Click the POST method for the /zombie/box resource.
  
 17\. Copy the contents of the **Invoke URL** field at the top of the page.
- 
+
+![Invoke URL for POST method](/Images/Box-Step17.png)
+
 18\. Open the **lambda/uploadFile/index.js** and **lambda/postSharedURL/index.js** file from the GitHub repo, found in the box folder.
  
 19\. Update all missing parameters in each of the lambda functions (**sharedLink/index.js** and **uploadFile/index.js**) under the Missing parameters information comment.
