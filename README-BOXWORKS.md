@@ -871,7 +871,7 @@ writing RSA key
  
 19\. Update all missing parameters in each of the lambda functions (**sharedLink/index.js** and **uploadFile/index.js**) under the Missing parameters information comment.
 
-Example:
+Example for uploadFile/index.js:
 ```javascript
 /* == Missing parameters information == */
 var API_KEY = ''; // Insert application Api Key from Backend Parameters section
@@ -880,6 +880,22 @@ var CLIENT_SECRET = ''; // Insert application client_secret from OAuth2 Paramete
 var PUBLIC_KEY_ID = ''; // Insert application Public Key ID from Public Key Management section
 var ENTERPRISE_ID = ''; // Insert Enterprise ID from Account Information section in Admin console under the business settings
 var RSA_PRIVATE_KEY = ``;  // Insert your generated private key including  -----BEGIN RSA PRIVATE KEY----- and -----END RSA PRIVATE KEY-----
+```
+
+Example for sharedLink/index.js:
+```javascript
+/* == Missing parameters information == */
+var API = {
+    region: '', //'Insert your region where you launched the stack
+    endpoint: '' //'Inser your API Gateway invoke url including https. Something like ... https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com
+};
+
+var API_KEY = ''; // Insert application Api Key from Backend Parameters section
+var CLIENT_ID = ''; // Insert application client_id from OAuth2 Parameters section
+var CLIENT_SECRET = ''; // Insert application client_secret from OAuth2 Parameters section
+var PUBLIC_KEY_ID = ''; // Insert application Public Key ID from Public Key Management section
+var RSA_PRIVATE_KEY = ``;  // Insert your generated private key including  -----BEGIN RSA PRIVATE KEY----- and -----END RSA PRIVATE KEY-----
+
 ```
  
 20\. Deploy your code from Cloud9:
