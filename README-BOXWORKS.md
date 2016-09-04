@@ -47,7 +47,7 @@ This section provides instructions to tear down your environment when you're don
 2\. Create a Cloud9 account:
 https://c9.io
 
-3\. Visit the "awshackers" team workspace: https://c9.io/awshackers
+3\. Make sure you can access the "awshackers" team workspace at https://c9.io/awshackers. If you cannot access this, please call a mentor and request access.
 
 4\. Clone the "awshackers/hackathon" workspace by visiting https://c9.io/luissala/hackathon and select the "Clone" button. Ensure you uniquely name the workspace.
 
