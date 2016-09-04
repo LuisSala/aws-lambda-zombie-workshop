@@ -191,7 +191,7 @@ Scroll to the bottom of the page and click **Save Changes** to save the User Poo
 ```bash
 $ export BUCKET=Enter.Your.Bucket.Name.Here
 ```
-![C9 IDE](Images\C9-Step19.png)
+![C9 IDE](/Images/C9-Step19.png)
 
 18\. From the Cloud9 IDE, run `$ pull constants` to download the constants.js file into **S3WebApp/assets/js**.
 
