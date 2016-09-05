@@ -48,14 +48,22 @@ This section provides instructions to tear down your environment when you're don
 
 1\. Create an AWS account if you don't already have one. Make sure you copy your AWS ACCESS KEY and SECRET ACCESS KEY. You'll need this later.
 
-2\. Create a Cloud9 account:
-https://c9.io
+2\. Create a Cloud9 account by visiting https://c9.io. Once you login, click on "Create a new workspace" as show here:
+![Cloud9 Create Workspace](/Images/C9-createspace.png)
 
-3\. Make sure you can access the "awshackers" team workspace at https://c9.io/awshackers. If you cannot access this, please call a mentor and request access.
+3\. We will configure your new workspace by cloning a Github repository. Enter the following in the field labeled "Clone from Git or Mercurial URL": https://github.com/LuisSala/aws-lambda-zombie-workshop
+![Cloud9 Clone Repo](/Images/C9-clonerepo.png)
 
-4\. Clone the "awshackers/hackathon" workspace by visiting https://c9.io/luissala/hackathon and select the "Clone" button. Ensure you uniquely name the workspace.
+4\. Select "NodeJS" as a template and click "Create Workspace" to open your newly-cloned workspace.
 
-5\. Open your newly-cloned workspace.
+5\. Once your workspace launches, enter the following to install some additional tools:
+```bash
+curl -L https://raw.githubusercontent.com/LuisSala/install/master/install.sh | bash
+```
+5a\. Run the following to ensure the new settings take hold:
+```bash
+source ~/.profile
+```
 
 6\. Configure AWS CLI with **aws configure**
 ```
